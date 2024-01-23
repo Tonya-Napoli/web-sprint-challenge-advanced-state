@@ -1,6 +1,9 @@
 import React from 'react'
+import { connect } from'react-redux'
+import { selectAnswer, setMessage, setQuiz, inputChange, resetForm, fetchQuiz, postAnswer, postQuiz } from '../state/action-creators'
+ 
 
-export default function Quiz(props) {
+function Quiz(props) {
   return (
     <div id="wrapper">
       {
@@ -12,15 +15,15 @@ export default function Quiz(props) {
             <div id="quizAnswers">
               <div className="answer selected">
                 A function
-                <button>
-                  SELECTED
+                <button onClick={() => props.selectAnswer('A function')}>
+                 {props.selectedAnswer === 'A function' ? 'SELECTED' : 'Select'}
                 </button>
               </div>
 
               <div className="answer">
                 An elephant
-                <button>
-                  Select
+                <button onClick={() => props.selectAnswer('An elephant')}>  
+                 {props.selectedAnswer === 'An elephant' ? 'SELECTED' : 'Select'}
                 </button>
               </div>
             </div>
@@ -32,3 +35,24 @@ export default function Quiz(props) {
     </div>
   )
 }
+
+const mapStateToProps = state => {
+  return {
+    quiz: state.quiz,
+    selectedAnswer: state.selectedAnswer,
+    infoMessage: state.infoMessage,
+    form: state.form,
+  }
+};
+
+const mapDispatchToProps = {
+  selectAnswer,
+  setMessage,
+  setQuiz,
+  inputChange,
+  resetForm,
+  fetchQuiz,
+  postAnswer,
+  postQuiz,
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Quiz);

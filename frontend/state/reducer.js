@@ -2,6 +2,8 @@
 import { combineReducers } from 'redux'
 
 import { MOVE_CLOCKWISE, MOVE_COUNTERCLOCKWISE } from "./action-types"
+import { selectAnswer, setMessage, setQuiz, inputChange, resetForm, fetchQuiz, postAnswer, postQuiz } from '../state/action-creators'
+ 
 
 const initialWheelState = 0;
 

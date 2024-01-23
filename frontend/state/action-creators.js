@@ -1,5 +1,6 @@
 import { MOVE_CLOCKWISE, MOVE_COUNTERCLOCKWISE } from "./action-types"
-
+import { SET_QUIZ_INTO_STATE } from "./action-types"
+import { SET_SELECTED_ANSWER } from "./action-types"
 
 // ❗ You don't need to add extra action creators to achieve MVP
 export function moveClockwise() { 
@@ -10,37 +11,83 @@ export function moveCounterClockwise() {
   return { type: MOVE_COUNTERCLOCKWISE };
  }
 
-export function selectAnswer() { }
+export function selectAnswer(answer) {
+  return { type: SET_SELECTED_ANSWER, answer };
+ }
 
-export function setMessage() { }
+export function setMessage(message) {
+  return { type: SET_MESSAGE, message };
+ }
 
-export function setQuiz() { }
+export function setQuiz(quiz) {
+  return { type: SET_QUIZ, quiz };
+ }
 
-export function inputChange() { }
-
-export function resetForm() { }
-
-// ❗ Async action creators
-export function fetchQuiz() {
-  return function (dispatch) {
-    // First, dispatch an action to reset the quiz state (so the "Loading next quiz..." message can display)
-    // On successful GET:
-    // - Dispatch an action to send the obtained quiz to its state
-  }
+export function inputChange(field, value) { 
+  return { type: INPUT_CHANGE, field, value };
 }
-export function postAnswer() {
-  return function (dispatch) {
-    // On successful POST:
-    // - Dispatch an action to reset the selected answer state
-    // - Dispatch an action to set the server message to state
-    // - Dispatch the fetching of the next quiz
-  }
+
+export function resetForm(reset) {
+  return { type: RESET_FORM, reset };
+ }
+
+ export function fetchQuiz() {
+  return async (dispatch) => {
+    dispatch(resetQuiz()); // Reset quiz state before fetching
+    try {
+      const response = await fetch('/api/quizzes/next'); // Assuming your API endpoint
+      const quiz = await response.json();
+      dispatch(setQuiz(quiz));
+    } catch (error) {
+      console.error('Error fetching quiz:', error);
+      dispatch(setMessage('Failed to fetch quiz.')); // Set error message
+    }
+  };
 }
-export function postQuiz() {
-  return function (dispatch) {
-    // On successful POST:
-    // - Dispatch the correct message to the the appropriate state
-    // - Dispatch the resetting of the form
-  }
+
+export function postAnswer(answer) {
+  return async (dispatch) => {
+    try {
+      const response = await fetch('/api/answers', {
+        method: 'POST',
+        body: JSON.stringify({ answer }),
+      });
+
+      if (response.ok) {
+        dispatch(resetSelectedAnswer());
+        const message = await response.text();
+        dispatch(setMessage(message));
+        dispatch(fetchQuiz()); // Fetch next quiz on successful answer
+      } else {
+        const errorData = await response.json();
+        dispatch(setMessage(errorData.error));
+      }
+    } catch (error) {
+      console.error('Error posting answer:', error);
+      dispatch(setMessage('Failed to submit answer.'));
+    }
+  };
 }
-// ❗ On promise rejections, use log statements or breakpoints, and put an appropriate error message in state
+
+export function postQuiz(newQuizData) {
+  return async (dispatch) => {
+    try {
+      const response = await fetch('/api/quizzes', {
+        method: 'POST',
+        body: JSON.stringify(newQuizData),
+      });
+
+      if (response.ok) {
+        const message = await response.text();
+        dispatch(setMessage(message));
+        dispatch(resetForm());
+      } else {
+        const errorData = await response.json();
+        dispatch(setMessage(errorData.error));
+      }
+    } catch (error) {
+      console.error('Error posting quiz:', error);
+      dispatch(setMessage('Failed to submit quiz.'));
+    }
+  };
+}
