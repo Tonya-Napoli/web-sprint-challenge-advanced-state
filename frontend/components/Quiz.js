@@ -5,6 +5,7 @@ import { selectAnswer, setMessage, setQuiz, inputChange, resetForm, fetchQuiz, p
 
 function Quiz(props) {
   //console.log("The quiz is: ", props);
+  console.log("The selected answer is: ", props.selectedAnswer);
   return (
     <div id="wrapper">
       {

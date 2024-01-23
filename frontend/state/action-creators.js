@@ -13,7 +13,7 @@ export function moveCounterClockwise() {
  }
 
 export function selectAnswer(answer) {
-  return { type: SET_SELECTED_ANSWER, answer };
+  return { type: SET_SELECTED_ANSWER, payload: answer };
  }
 
 export function setMessage(message) {
