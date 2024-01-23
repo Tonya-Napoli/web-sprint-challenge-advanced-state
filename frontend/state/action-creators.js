@@ -2,6 +2,7 @@ import { MOVE_CLOCKWISE, MOVE_COUNTERCLOCKWISE } from "./action-types"
 import { SET_QUIZ_INTO_STATE } from "./action-types"
 import { SET_SELECTED_ANSWER } from "./action-types"
 
+
 // ❗ You don't need to add extra action creators to achieve MVP
 export function moveClockwise() { 
   return { type: MOVE_CLOCKWISE };
@@ -23,12 +24,20 @@ export function setQuiz(quiz) {
   return { type: SET_QUIZ, quiz };
  }
 
+ export function setQuizIntoState(quiz) {
+  return { type: SET_QUIZ_INTO_STATE, quiz };
+ }
+
 export function inputChange(field, value) { 
   return { type: INPUT_CHANGE, field, value };
 }
 
 export function resetForm(reset) {
   return { type: RESET_FORM, reset };
+ }
+
+ export function resetQuiz() {
+  return { type: RESET_QUIZ };
  }
 
  export function fetchQuiz() {

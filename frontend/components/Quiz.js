@@ -4,6 +4,7 @@ import { selectAnswer, setMessage, setQuiz, inputChange, resetForm, fetchQuiz, p
  
 
 function Quiz(props) {
+  //console.log("The quiz is: ", props);
   return (
     <div id="wrapper">
       {
@@ -28,7 +29,7 @@ function Quiz(props) {
               </div>
             </div>
 
-            <button id="submitAnswerBtn">Submit answer</button>
+            <button id="submitAnswerBtn" onClick={props.fetchQuiz}>Submit answer</button>
           </>
         ) : 'Loading next quiz...'
       }

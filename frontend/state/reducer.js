@@ -3,7 +3,7 @@ import { combineReducers } from 'redux'
 
 import { MOVE_CLOCKWISE, MOVE_COUNTERCLOCKWISE } from "./action-types"
 import { selectAnswer, setMessage, setQuiz, inputChange, resetForm, fetchQuiz, postAnswer, postQuiz } from '../state/action-creators'
- 
+import { SET_QUIZ_INTO_STATE, RESET_QUIZ } from "./action-types"
 
 const initialWheelState = 0;
 
@@ -24,7 +24,17 @@ function wheel(state = initialWheelState, action) {
 
 const initialQuizState = null
 function quiz(state = initialQuizState, action) {
-  return state
+  switch (action.type) {
+
+    case SET_QUIZ_INTO_STATE:
+      return action.quiz
+
+    case RESET_QUIZ:
+      return null
+
+    default:
+      return state
+  }
 }
 
 const initialSelectedAnswerState = null
