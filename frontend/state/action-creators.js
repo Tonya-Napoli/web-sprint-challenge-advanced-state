@@ -21,7 +21,7 @@ export function setMessage(message) {
  }
 
 export function setQuiz(quiz) {
-  return { type: SET_QUIZ, quiz };
+  return { type: SET_QUIZ, payload: quiz };
  }
 
  export function setQuizIntoState(quiz) {
