@@ -54,19 +54,22 @@ export function resetForm(reset) {
   };
 }
 
-export function postAnswer(answer) {
+export function postAnswer(selectedAnswer) {
   return async (dispatch) => {
+    dispatch({ type: SET_SELECTED_ANSWER, answer: selectedAnswer }); // Set selected answer state
+
     try {
       const response = await fetch('/api/answers', {
         method: 'POST',
-        body: JSON.stringify({ answer }),
+        body: JSON.stringify({ answer: selectedAnswer }),
       });
 
       if (response.ok) {
-        dispatch(resetSelectedAnswer());
+        //dispatch(resetSelectedAnswer());
         const message = await response.text();
         dispatch(setMessage(message));
         dispatch(fetchQuiz()); // Fetch next quiz on successful answer
+        dispatch(resetSelectedAnswer());
       } else {
         const errorData = await response.json();
         dispatch(setMessage(errorData.error));

@@ -30,7 +30,7 @@ function Quiz(props) {
               </div>
             </div>
 
-            <button id="submitAnswerBtn" onClick={props.fetchQuiz}>Submit answer</button>
+            <button id="submitAnswerBtn" onClick={() => props.postAnswer(props.selectedAnswer)}>Submit answer</button>
           </>
         ) : 'Loading next quiz...'
       }
