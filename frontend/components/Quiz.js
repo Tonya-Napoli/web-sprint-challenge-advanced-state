@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from'react-redux'
-import { selectAnswer, setMessage, setQuiz, inputChange, resetForm, fetchQuiz, postAnswer, postQuiz } from '../state/action-creators'
+import { selectAnswer, setInfoMessage, setQuiz, inputChange, resetForm, fetchQuiz, postAnswer, postQuiz } from '../state/action-creators'
  
 
 function Quiz(props) {
@@ -49,7 +49,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   selectAnswer,
-  setMessage,
+  setInfoMessage,
   setQuiz,
   inputChange,
   resetForm,

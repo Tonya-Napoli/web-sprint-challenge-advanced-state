@@ -1,6 +1,6 @@
 import { MOVE_CLOCKWISE, MOVE_COUNTERCLOCKWISE } from "./action-types"
 import { SET_QUIZ_INTO_STATE } from "./action-types"
-import { SET_SELECTED_ANSWER } from "./action-types"
+import { SET_SELECTED_ANSWER, SET_INFO_MESSAGE } from "./action-types"
 
 
 // ❗ You don't need to add extra action creators to achieve MVP
@@ -16,8 +16,8 @@ export function selectAnswer(answer) {
   return { type: SET_SELECTED_ANSWER, payload: answer };
  }
 
-export function setMessage(message) {
-  return { type: SET_MESSAGE, message };
+export function setInfoMessage(message) {
+  return { type: SET_INFO_MESSAGE, message };
  }
 
 export function setQuiz(quiz) {
@@ -72,11 +72,11 @@ export function postAnswer(selectedAnswer) {
         dispatch(resetSelectedAnswer());
       } else {
         const errorData = await response.json();
-        dispatch(setMessage(errorData.error));
+        dispatch(setInfoMessage(errorData.error));
       }
     } catch (error) {
       console.error('Error posting answer:', error);
-      dispatch(setMessage('Failed to submit answer.'));
+      dispatch(setInfoMessage('Failed to submit answer.'));
     }
   };
 }
