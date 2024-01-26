@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from'react-redux'
-import { selectAnswer, setInfoMessage, setQuiz, inputChange, resetForm, fetchQuiz, postAnswer, postQuiz } from '../state/action-creators'
+import { selectedAnswer, selectAnswer, setInfoMessage, setQuiz, inputChange, resetForm, fetchQuiz, postAnswer, postQuiz } from '../state/action-creators'
  
 
 function Quiz(props) {

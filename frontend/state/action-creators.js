@@ -44,7 +44,7 @@ export function resetForm(reset) {
   return async (dispatch) => {
     dispatch(resetQuiz()); // Reset quiz state before fetching
     try {
-      const response = await fetch('/api/quizzes/next'); // Assuming your API endpoint
+      const response = await fetch('/api/quiz/next'); // Assuming your API endpointv - quizzes
       const quiz = await response.json();
       dispatch(setQuiz(quiz));
     } catch (error) {
@@ -59,7 +59,7 @@ export function postAnswer(selectedAnswer) {
     dispatch({ type: SET_SELECTED_ANSWER, answer: selectedAnswer }); // Set selected answer state
 
     try {
-      const response = await fetch('/api/answers', {
+      const response = await fetch('/api/quiz/answer', { //api/answers
         method: 'POST',
         body: JSON.stringify({ answer: selectedAnswer }),
       });
@@ -84,22 +84,22 @@ export function postAnswer(selectedAnswer) {
 export function postQuiz(newQuizData) {
   return async (dispatch) => {
     try {
-      const response = await fetch('/api/quizzes', {
+      const response = await fetch('/api/quiz/answer', {  //api/quizzes
         method: 'POST',
         body: JSON.stringify(newQuizData),
       });
 
       if (response.ok) {
         const message = await response.text();
-        dispatch(setMessage(message));
+        dispatch(setInfoMessage(message));
         dispatch(resetForm());
       } else {
         const errorData = await response.json();
-        dispatch(setMessage(errorData.error));
+        dispatch(setInfoMessage(errorData.error));
       }
     } catch (error) {
       console.error('Error posting quiz:', error);
-      dispatch(setMessage('Failed to submit quiz.'));
+      dispatch(setInfoMessage('Failed to submit quiz.'));
     }
   };
 }
