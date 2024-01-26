@@ -1,6 +1,6 @@
 import { MOVE_CLOCKWISE, MOVE_COUNTERCLOCKWISE } from "./action-types"
-import { SET_QUIZ_INTO_STATE } from "./action-types"
-import { SET_SELECTED_ANSWER, SET_INFO_MESSAGE } from "./action-types"
+import { SET_QUIZ, SET_QUIZ_INTO_STATE, RESET_QUIZ, SET_SELECTED_ANSWER, SELECT_ANSWER,SET_INFO_MESSAGE } from "./action-types"
+import { INPUT_CHANGE, RESET_FORM} from "./action-types"
 
 
 // ❗ You don't need to add extra action creators to achieve MVP
@@ -12,8 +12,12 @@ export function moveCounterClockwise() {
   return { type: MOVE_COUNTERCLOCKWISE };
  }
 
-export function selectAnswer(answer) {
+ export function setSelectedAnswer (answer) {
   return { type: SET_SELECTED_ANSWER, payload: answer };
+ }
+
+export function selectAnswer(answer) {
+  return { type: SELECT_ANSWER, payload: answer };
  }
 
 export function setInfoMessage(message) {
