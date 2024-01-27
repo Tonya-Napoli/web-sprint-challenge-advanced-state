@@ -1,11 +1,9 @@
 import React from 'react'
 import { connect } from'react-redux'
-import { selectedAnswer, selectAnswer, setInfoMessage, setQuiz, inputChange, resetForm, fetchQuiz, postAnswer, postQuiz } from '../state/action-creators'
+import { selectAnswer, setMessage, setQuiz, inputChange, resetForm, fetchQuiz, postAnswer, postQuiz } from '../state/action-creators'
  
 
 function Quiz(props) {
-  //console.log("The quiz is: ", props);
-  console.log("The selected answer is: ", props.selectedAnswer);
   return (
     <div id="wrapper">
       {
@@ -49,7 +47,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   selectAnswer,
-  setInfoMessage,
+  setMessage,
   setQuiz,
   inputChange,
   resetForm,

@@ -1,5 +1,5 @@
 import { MOVE_CLOCKWISE, MOVE_COUNTERCLOCKWISE } from "./action-types"
-import { SET_QUIZ, SET_QUIZ_INTO_STATE, RESET_QUIZ, SET_SELECTED_ANSWER, SELECT_ANSWER,SET_INFO_MESSAGE } from "./action-types"
+import { SET_QUIZ, SET_QUIZ_INTO_STATE, SET_SELECTED_ANSWER, SELECT_ANSWER,SET_MESSAGE } from "./action-types"
 import { INPUT_CHANGE, RESET_FORM} from "./action-types"
 
 
@@ -12,24 +12,16 @@ export function moveCounterClockwise() {
   return { type: MOVE_COUNTERCLOCKWISE };
  }
 
- export function setSelectedAnswer (answer) {
-  return { type: SET_SELECTED_ANSWER, payload: answer };
+ export function selectAnswer (answer_id) {
+  return { type: SET_SELECTED_ANSWER, payload: answer_id };
  }
 
-export function selectAnswer(answer) {
-  return { type: SELECT_ANSWER, payload: answer };
+export function setMessage(message) {
+  return { type: SET_MESSAGE, payload: message };
  }
 
-export function setInfoMessage(message) {
-  return { type: SET_INFO_MESSAGE, message };
- }
-
-export function setQuiz(quiz) {
-  return { type: SET_QUIZ, payload: quiz };
- }
-
- export function setQuizIntoState(quiz) {
-  return { type: SET_QUIZ_INTO_STATE, quiz };
+export function setQuiz(quiz_id) {
+  return { type: SET_QUIZ, payload: quiz_id };
  }
 
 export function inputChange(field, value) { 
@@ -41,14 +33,14 @@ export function resetForm(reset) {
  }
 
  export function resetQuiz() {
-  return { type: RESET_QUIZ };
+  return { type: RESET_QUIZ };//do i need this?
  }
 
  export function fetchQuiz() {
   return async (dispatch) => {
-    dispatch(resetQuiz()); // Reset quiz state before fetching
+    //dispatch(resetQuiz()); // Reset quiz state before fetching
     try {
-      const response = await fetch('/api/quiz/next'); // Assuming your API endpointv - quizzes
+      const response = await fetch('/api/quiz/next');
       const quiz = await response.json();
       dispatch(setQuiz(quiz));
     } catch (error) {
@@ -60,27 +52,27 @@ export function resetForm(reset) {
 
 export function postAnswer(selectedAnswer) {
   return async (dispatch) => {
-    dispatch({ type: SET_SELECTED_ANSWER, answer: selectedAnswer }); // Set selected answer state
+    dispatch({ type: SET_SELECTED_ANSWER, payload: selectedAnswer }); // Set selected answer state
 
     try {
       const response = await fetch('/api/quiz/answer', { //api/answers
         method: 'POST',
-        body: JSON.stringify({ answer: selectedAnswer }),
+        body: JSON.stringify({ answer: selectAnswer }),
+        headers: { 'Content-Type': 'application/json' },
       });
 
       if (response.ok) {
-        //dispatch(resetSelectedAnswer());
         const message = await response.text();
         dispatch(setMessage(message));
         dispatch(fetchQuiz()); // Fetch next quiz on successful answer
-        dispatch(resetSelectedAnswer());
+        dispatch(resetForm());
       } else {
         const errorData = await response.json();
-        dispatch(setInfoMessage(errorData.error));
+        dispatch(setMessage(errorData.error));
       }
     } catch (error) {
       console.error('Error posting answer:', error);
-      dispatch(setInfoMessage('Failed to submit answer.'));
+      dispatch(setMessage('Failed to submit answer.'));
     }
   };
 }
@@ -94,16 +86,16 @@ export function postQuiz(newQuizData) {
       });
 
       if (response.ok) {
-        const message = await response.text();
-        dispatch(setInfoMessage(message));
+        const message = await response.json();
+        dispatch(setMessage(message));
         dispatch(resetForm());
       } else {
         const errorData = await response.json();
-        dispatch(setInfoMessage(errorData.error));
+        dispatch(setMessage(errorData.error));
       }
     } catch (error) {
       console.error('Error posting quiz:', error);
-      dispatch(setInfoMessage('Failed to submit quiz.'));
+      dispatch(setMessage('Failed to submit quiz.'));
     }
   };
 }

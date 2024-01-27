@@ -28,10 +28,7 @@ function quiz(state = initialQuizState, action) {
 
     case SET_QUIZ_INTO_STATE:
       return action.quiz
-
-    case RESET_QUIZ:
-      return null
-
+      
     default:
       return state
   }
