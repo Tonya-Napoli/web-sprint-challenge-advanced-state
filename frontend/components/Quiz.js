@@ -36,7 +36,8 @@ import { selectAnswer,
                     </div>
                   ))}
                 </div>
-                <button id="submitAnswerBtn" onClick={() => props.postAnswer(props.selectedAnswer)}>Submit answer</button>
+                <button id="submitAnswerBtn" onClick={() => props.postAnswer(props.selectedAnswer)}
+                                              disabled={!props.selectedAnswer}>Submit answer</button>
               </div>
             );
           }
