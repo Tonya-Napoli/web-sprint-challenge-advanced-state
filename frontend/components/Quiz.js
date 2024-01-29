@@ -23,6 +23,8 @@ import { selectAnswer,
   
             return (
               <div id="wrapper">
+               {/* {props.infoMessage && <div id="message">{props.infoMessage}</div>} */}
+
                 <h2>{quizData.question}</h2>
                 <div id="quizAnswers">
                   {quizData.answers.map((answer) => (

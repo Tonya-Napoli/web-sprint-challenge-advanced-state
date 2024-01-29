@@ -20,6 +20,7 @@ return { type: MOVE_COUNTERCLOCKWISE };
  }
 
 export function setMessage(message) {
+  console.log("Dispatching message: message is logged", message);//is the message logged?
   return { type: SET_MESSAGE, payload: message };
  }
 
@@ -55,14 +56,6 @@ export function resetForm(reset) {
 
       dispatch(actionPayload);
 
-
-
-      /*if (response.ok) {
-        dispatch({ type: "SET_QUIZ_INTO_STATE", payload: quiz });
-        console.log('fethQuiz: Dispatched SET_QUIZ_INTO_STATE log 4', quiz); //log 4
-      } else {
-        throw new Error('Failed to Fetch Quiz');
-      }*/
       } catch (error) {
       console.error('Console Error/Error fetching quiz:', error);
       dispatch(setMessage('Failed to fetch quiz'));
@@ -76,8 +69,7 @@ export function postAnswer(selectedAnswer) {
 
     try {
 
-      //const result = await response.json();
-
+  
       const response = await fetch('http://localhost:9000/api/quiz/answer', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -85,6 +77,7 @@ export function postAnswer(selectedAnswer) {
       });
       
       const result = await response.json();
+      console.log("Server Response:", result);//what is the server sending?
 
       if (response.ok) {
         dispatch(setMessage(result.message));
