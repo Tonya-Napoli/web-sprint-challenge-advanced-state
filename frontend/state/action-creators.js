@@ -83,6 +83,8 @@ export function postAnswer(selectedAnswer) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ quiz_id: quiz.quiz_id, answer_id: selectedAnswer }),   
       });
+      
+      const result = await response.json();
 
       if (response.ok) {
         dispatch(setMessage(result.message));
