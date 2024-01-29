@@ -1,15 +1,18 @@
-import { MOVE_CLOCKWISE, MOVE_COUNTERCLOCKWISE } from "./action-types"
-import { SET_QUIZ, SET_QUIZ_INTO_STATE, SET_SELECTED_ANSWER, SELECT_ANSWER,SET_MESSAGE } from "./action-types"
-import { INPUT_CHANGE, RESET_FORM} from "./action-types"
-
+import { MOVE_CLOCKWISE,
+         MOVE_COUNTERCLOCKWISE,
+         SET_QUIZ, 
+         SET_QUIZ_INTO_STATE, 
+         SET_SELECTED_ANSWER, 
+         SET_MESSAGE, 
+         INPUT_CHANGE, 
+         RESET_FORM} from "./action-types"
 
 // ❗ You don't need to add extra action creators to achieve MVP
 export function moveClockwise() { 
   return { type: MOVE_CLOCKWISE };
 }
-
 export function moveCounterClockwise() {
-  return { type: MOVE_COUNTERCLOCKWISE };
+return { type: MOVE_COUNTERCLOCKWISE };
  }
 
  export function selectAnswer (answer_id) {
@@ -27,48 +30,66 @@ export function setQuiz(quiz_id) {
 export function inputChange(field, value) { 
   return { type: INPUT_CHANGE, field, value };
 }
-
 export function resetForm(reset) {
   return { type: RESET_FORM, reset };
  }
 
- export function resetQuiz() {
-  return { type: RESET_QUIZ };//do i need this?
- }
-
- export function fetchQuiz() {
+  export function fetchQuiz() {
   return async (dispatch) => {
-    //dispatch(resetQuiz()); // Reset quiz state before fetching
     try {
-      const response = await fetch('/api/quiz/next');
-      const quiz = await response.json();
-      dispatch(setQuiz(quiz));
-    } catch (error) {
-      console.error('Error fetching quiz:', error);
-      dispatch(setMessage('Failed to fetch quiz.')); // Set error message
+      
+      
+      const response = await fetch('http://localhost:9000/api/quiz/next');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const quizData = await response.json();
+      
+      const actionPayload = {
+        type: "SET_QUIZ_INTO_STATE",
+        quiz_id: quizData.quiz_id,
+        question: quizData.question,
+        answers: quizData.answers,
+      };
+
+      dispatch(actionPayload);
+
+
+
+      /*if (response.ok) {
+        dispatch({ type: "SET_QUIZ_INTO_STATE", payload: quiz });
+        console.log('fethQuiz: Dispatched SET_QUIZ_INTO_STATE log 4', quiz); //log 4
+      } else {
+        throw new Error('Failed to Fetch Quiz');
+      }*/
+      } catch (error) {
+      console.error('Console Error/Error fetching quiz:', error);
+      dispatch(setMessage('Failed to fetch quiz'));
     }
-  };
+ };
 }
 
 export function postAnswer(selectedAnswer) {
-  return async (dispatch) => {
-    dispatch({ type: SET_SELECTED_ANSWER, payload: selectedAnswer }); // Set selected answer state
+  return async (dispatch, getState) => {
+    const { quiz } = getState(); //getting current quiz from state
 
     try {
-      const response = await fetch('/api/quiz/answer', { //api/answers
+
+      //const result = await response.json();
+
+      const response = await fetch('http://localhost:9000/api/quiz/answer', { 
         method: 'POST',
-        body: JSON.stringify({ answer: selectAnswer }),
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ quiz_id: quiz.quiz_id, answer_id: selectedAnswer }),   
       });
 
       if (response.ok) {
-        const message = await response.text();
-        dispatch(setMessage(message));
-        dispatch(fetchQuiz()); // Fetch next quiz on successful answer
-        dispatch(resetForm());
+        dispatch(setMessage(result.message));
+        dispatch(fetchQuiz());
+
       } else {
-        const errorData = await response.json();
-        dispatch(setMessage(errorData.error));
+        throw new Error(result.message);
       }
     } catch (error) {
       console.error('Error posting answer:', error);
@@ -80,7 +101,7 @@ export function postAnswer(selectedAnswer) {
 export function postQuiz(newQuizData) {
   return async (dispatch) => {
     try {
-      const response = await fetch('/api/quiz/answer', {  //api/quizzes
+      const response = await fetch('http://localhost:9000/api/quiz/answer', {  //api/quizzes
         method: 'POST',
         body: JSON.stringify(newQuizData),
       });
@@ -89,6 +110,7 @@ export function postQuiz(newQuizData) {
         const message = await response.json();
         dispatch(setMessage(message));
         dispatch(resetForm());
+
       } else {
         const errorData = await response.json();
         dispatch(setMessage(errorData.error));
