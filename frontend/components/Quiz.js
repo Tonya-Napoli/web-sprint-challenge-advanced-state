@@ -15,6 +15,10 @@ import { selectAnswer,
               props.fetchQuiz()
             }, []);
 
+            if (props.loading) {
+              return <div>Loading next quiz...</div>
+            }
+
             const quizData = props.quiz;
 
             if (!quizData) {
@@ -23,7 +27,7 @@ import { selectAnswer,
   
             return (
               <div id="wrapper">
-               {/* {props.infoMessage && <div id="message">{props.infoMessage}</div>} */}
+               
 
                 <h2>{quizData.question}</h2>
                 <div id="quizAnswers">
@@ -47,6 +51,7 @@ import { selectAnswer,
               quiz: state.quiz,
               selectedAnswer: state.selectedAnswer,
               infoMessage: state.infoMessage,
+              loading: state.loading,
               form: state.form,
             }
           };

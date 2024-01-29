@@ -5,7 +5,8 @@ import { MOVE_CLOCKWISE,
          SET_SELECTED_ANSWER, 
          SET_MESSAGE, 
          INPUT_CHANGE, 
-         RESET_FORM} from "./action-types"
+         RESET_FORM,
+         SET_LOADING} from "./action-types"
 
 // ❗ You don't need to add extra action creators to achieve MVP
 export function moveClockwise() { 
@@ -35,11 +36,11 @@ export function resetForm(reset) {
   return { type: RESET_FORM, reset };
  }
 
-  export function fetchQuiz() {
+ export function fetchQuiz() {
   return async (dispatch) => {
+    dispatch({ type: 'SET_LOADING', payload: true }); // Start loading
+
     try {
-      
-      
       const response = await fetch('http://localhost:9000/api/quiz/next');
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -55,13 +56,16 @@ export function resetForm(reset) {
       };
 
       dispatch(actionPayload);
+      dispatch({ type: 'SET_LOADING', payload: false }); // Stop loading
 
-      } catch (error) {
+    } catch (error) {
       console.error('Console Error/Error fetching quiz:', error);
       dispatch(setMessage('Failed to fetch quiz'));
+      dispatch({ type: 'SET_LOADING', payload: false }); // Stop loading even if there's an error
     }
- };
+  };
 }
+
 
 export function postAnswer(selectedAnswer) {
   return async (dispatch, getState) => {

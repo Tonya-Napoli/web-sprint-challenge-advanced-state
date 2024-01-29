@@ -7,6 +7,7 @@ import { MOVE_CLOCKWISE,
   SET_QUIZ_INTO_STATE,
   SET_SELECTED_ANSWER,
   SET_MESSAGE,
+  SET_LOADING,
   INPUT_CHANGE,
   RESET_FORM,
  } from "./action-types"
@@ -26,7 +27,20 @@ function wheel(state = initialWheelState, action) {
   }
 }
  
-const initialQuizState = null
+
+const initialLoadingState = false;
+
+function loading(state = initialLoadingState, action) {
+  switch (action.type) {
+    case SET_LOADING:
+      return action.payload;
+    default:
+      return state
+  }
+}
+
+const initialQuizState = null;
+
 function quiz(state = initialQuizState, action) {
   switch (action.type) {
 
@@ -75,4 +89,4 @@ function form(state = initialFormState, action) {
   return state
 }
 
-export default combineReducers({ wheel, quiz, selectedAnswer, infoMessage, form })
+export default combineReducers({ wheel, quiz, selectedAnswer, infoMessage, loading, form })
