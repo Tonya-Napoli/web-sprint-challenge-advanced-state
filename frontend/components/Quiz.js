@@ -12,8 +12,10 @@ import { selectAnswer,
           function Quiz(props) {
            
             useEffect(() => {
-              props.fetchQuiz()
-            }, []);
+              if (!props.quiz) {
+              props.fetchQuiz()// need to fetch only if there's no current quiz data
+            }
+           }, [props.quiz]);
 
             if (props.loading) {
               return <div>Loading next quiz...</div>
