@@ -27,7 +27,6 @@ function wheel(state = initialWheelState, action) {
   }
 }
  
-
 const initialLoadingState = false;
 
 function loading(state = initialLoadingState, action) {

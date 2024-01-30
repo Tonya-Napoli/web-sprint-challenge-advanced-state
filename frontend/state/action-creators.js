@@ -101,19 +101,19 @@ export function postAnswer(selectedAnswer) {
   };
 }
 
-export function postQuiz(newQuizData) {
+export function postQuiz(newQuizData) { 
   return async (dispatch) => {
     try {
 
       const formattedData = {
-        question_text: newQuizData.newQuestion,
-        true_answer_text: newQuizData.newTrueAnswer,
-        false_answer_text: newQuizData.newFalseAnswer,
+        question_text: newQuizData.question_text,
+        true_answer_text: newQuizData.true_answer_text,
+        false_answer_text: newQuizData.false_answer_text,
       }
-      const response = await fetch('http://localhost:9000/api/quiz/new', {  //api/quiz/answer
+      const response = await fetch('http://localhost:9000/api/quiz/new', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newQuizData),
+        body: JSON.stringify(newQuizData), //newQuizData
       });
 
       if (response.ok) {

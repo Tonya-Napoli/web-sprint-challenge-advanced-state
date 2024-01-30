@@ -9,7 +9,10 @@ export function Form(props) {
     false_answer_text: '',
   });
 
- 
+  const isFormValid = Object.values(formData).every(
+    value => value.trim().length >0
+  )
+
   useEffect (() => {
     // load saved data from local storage on mount
     const savedData = localStorage.getItem('formData');
@@ -68,7 +71,10 @@ export function Form(props) {
         placeholder="Enter false answer" 
       />
 
-      <button type="submit" id="submitNewQuizBtn">Submit new quiz</button>
+      <button type="submit" 
+      id="submitNewQuizBtn"
+      disabled={!isFormValid}//disabling button unless all fields have a value of more than one character
+      >Submit new quiz</button>
     </form>
   );
 }
