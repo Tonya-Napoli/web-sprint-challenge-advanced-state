@@ -1,32 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import * as actionCreators from '../state/action-creators';
 
 export function Form(props) {
-  // Separate state variables for each input
-  const [newQuestion, setNewQuestion] = useState('');
-  const [newTrueAnswer, setNewTrueAnswer] = useState('');
-  const [newFalseAnswer, setNewFalseAnswer] = useState('');
+  const [formData, setFormData] = useState({
+    question_text: '',
+    true_answer_text: '',
+    false_answer_text: '',
+  });
 
-  const onChange = evt => {
-    const { id, value } = evt.target;
-    if (id === 'newQuestion') setNewQuestion(value);
-    else if (id === 'newTrueAnswer') setNewTrueAnswer(value);
-    else if (id === 'newFalseAnswer') setNewFalseAnswer(value);
+ 
+  useEffect (() => {
+    // load saved data from local storage on mount
+    const savedData = localStorage.getItem('formData');
+    if (savedData) {
+      setFormData(JSON.parse(savedData));
+    }
+  }, []);
+  // Save data to local storage on change
+  useEffect(() => {
+    localStorage.setItem('formData', JSON.stringify(formData));
+  }, [formData]);
+
+
+  const handleChange = ( event ) => {
+    setFormData({
+     ...formData,
+      [event.target.id]: event.target.value
+    });
   };
 
   const onSubmit = evt => {
     evt.preventDefault();
-    const formattedData = {
-      question_text: newQuestion,
-      true_answer_text: newTrueAnswer,
-      false_answer_text: newFalseAnswer,
-    };
-    props.postQuiz(formattedData);
-    setNewQuestion('');
-    setNewTrueAnswer('');
-    setNewFalseAnswer('');
-  };
+    props.postQuiz(formData);
+    setFormData({
+      question_text: '',
+      true_answer_text: '',
+      false_answer_text: '',
+    });
+  }
 
   return (
     <form id="form" onSubmit={onSubmit}>
@@ -34,25 +46,25 @@ export function Form(props) {
 
       <input 
         maxLength={50}
-        value={newQuestion}
-        onChange={onChange} 
-        id="newQuestion" 
+        value={formData.question_text}
+        onChange={handleChange} 
+        id="question_text" 
         placeholder="Enter question" 
       />
 
       <input 
         maxLength={50} 
-        value={newTrueAnswer}
-        onChange={onChange} 
-        id="newTrueAnswer" 
+        value={formData.true_answer_text}
+        onChange={handleChange} 
+        id="true_answer_text" 
         placeholder="Enter true answer" 
       />
 
       <input 
         maxLength={50} 
-        value={newFalseAnswer}
-        onChange={onChange} 
-        id="newFalseAnswer" 
+        value={formData.false_answer_text}
+        onChange={handleChange} 
+        id="false_answer_text" 
         placeholder="Enter false answer" 
       />
 

@@ -9,7 +9,7 @@ import { MOVE_CLOCKWISE,
   SET_MESSAGE,
   SET_LOADING,
   INPUT_CHANGE,
-  RESET_FORM,
+  //RESET_FORM,
  } from "./action-types"
                         
 const initialWheelState = 0;
@@ -81,10 +81,8 @@ function infoMessage(state = initialMessageState, action) {
 const initialFormState = {
   newQuestion: '',
   newTrueAnswer: '',
-  newFalseAnswer: '',
-}
-function form(state = initialFormState, action) {
-  return state
-}
+  newFalseAnswer: ''
+};
 
-export default combineReducers({ wheel, quiz, selectedAnswer, infoMessage, loading, form })
+
+export default combineReducers({ wheel, quiz, selectedAnswer, infoMessage, loading })

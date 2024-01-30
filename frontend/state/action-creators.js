@@ -6,7 +6,8 @@ import { MOVE_CLOCKWISE,
          SET_MESSAGE, 
          INPUT_CHANGE, 
          RESET_FORM,
-         SET_LOADING} from "./action-types"
+         SET_LOADING,
+         UPDATE_FORM} from "./action-types"
 
 // ❗ You don't need to add extra action creators to achieve MVP
 export function moveClockwise() { 
@@ -16,7 +17,7 @@ export function moveCounterClockwise() {
 return { type: MOVE_COUNTERCLOCKWISE };
  }
 
- export function selectAnswer (answer_id) {
+export function selectAnswer (answer_id) {
   return { type: SET_SELECTED_ANSWER, payload: answer_id };
  }
 
@@ -32,8 +33,8 @@ export function setQuiz(quiz_id) {
 export function inputChange(field, value) { 
   return { type: INPUT_CHANGE, field, value };
 }
-export function resetForm(reset) {
-  return { type: RESET_FORM, reset };
+export function resetForm() {
+  return { type: RESET_FORM };
  }
 
  export function fetchQuiz() {
@@ -66,6 +67,9 @@ export function resetForm(reset) {
   };
 }
 
+export const updateForm = (formData) => {
+  return { type: 'UPDATE_FORM', payload: formData };
+}
 
 export function postAnswer(selectedAnswer) {
   return async (dispatch, getState) => {
