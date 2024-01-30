@@ -67,15 +67,13 @@ function selectedAnswer(state = initialSelectedAnswerState, action) {
 
 }
 
-const initialMessageState = ''
+const initialMessageState = '';
+
 function infoMessage(state = initialMessageState, action) {
   switch (action.type) {
     case SET_MESSAGE:
-      return action.payload;
+      return action.payload || state;
     default:
-      return state
-  
-
   return state
 }
 }

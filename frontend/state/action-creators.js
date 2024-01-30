@@ -100,19 +100,26 @@ export function postAnswer(selectedAnswer) {
 export function postQuiz(newQuizData) {
   return async (dispatch) => {
     try {
-      const response = await fetch('http://localhost:9000/api/quiz/answer', {  //api/quizzes
+
+      const formattedData = {
+        question_text: newQuizData.newQuestion,
+        true_answer_text: newQuizData.newTrueAnswer,
+        false_answer_text: newQuizData.newFalseAnswer,
+      }
+      const response = await fetch('http://localhost:9000/api/quiz/new', {  //api/quiz/answer
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newQuizData),
       });
 
       if (response.ok) {
         const message = await response.json();
-        dispatch(setMessage(message));
+        dispatch(setMessage(message.message));
         dispatch(resetForm());
 
       } else {
         const errorData = await response.json();
-        dispatch(setMessage(errorData.error));
+        dispatch(setMessage(errorData.message));
       }
     } catch (error) {
       console.error('Error posting quiz:', error);

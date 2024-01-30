@@ -3,8 +3,6 @@ import { connect } from'react-redux'
 import { selectAnswer, 
           setMessage, 
           setQuiz, 
-          inputChange, 
-          resetForm, 
           fetchQuiz, 
           postAnswer, 
          } from '../state/action-creators'
@@ -62,8 +60,6 @@ import { selectAnswer,
             selectAnswer,
             setMessage,
             setQuiz,
-            inputChange,
-            resetForm,
             fetchQuiz,
             postAnswer,
             
