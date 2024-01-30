@@ -32,7 +32,7 @@ import { selectAnswer,
                 <h2>{quizData.question}</h2>
                 <div id="quizAnswers">
                   {quizData.answers.map((answer) => (
-                    <div className="answer" key={answer.answer_id}>
+                      <div className={`answer ${props.selectedAnswer === answer.answer_id ? 'selected' : ''}`} key={answer.answer_id}>
                       {answer.text}
                       <button onClick={() => props.selectAnswer(answer.answer_id)}>
                         {props.selectedAnswer === answer.answer_id ? 'SELECTED' : 'Select'}
