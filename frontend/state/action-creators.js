@@ -22,19 +22,25 @@ export function selectAnswer (answer_id) {
  }
 
 export function setMessage(message) {
-  console.log("Dispatching message: message is logged", message);//is the message logged?
+  console.log("setMessage:message is logged", message);//is the message logged?
   return { type: SET_MESSAGE, payload: message };
  }
 
 export function setQuiz(quiz_id) {
-  return { type: SET_QUIZ, payload: quiz_id };
+  return { 
+    type: SET_QUIZ, payload: quiz_id };
  }
 
-export function inputChange(field, value) { 
-  return { type: INPUT_CHANGE, field, value };
-}
-export function resetForm() {
-  return { type: RESET_FORM };
+export const inputChange = (field, value) => { 
+  return { 
+    type: 'INPUT_CHANGE', 
+    payload: {field, value },
+};
+};
+
+export const resetForm = () => {
+  return { 
+    type: 'RESET_FORM' };
  }
 
  export function fetchQuiz() {
@@ -77,7 +83,6 @@ export function postAnswer(selectedAnswer) {
 
     try {
 
-  
       const response = await fetch('http://localhost:9000/api/quiz/answer', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -85,9 +90,10 @@ export function postAnswer(selectedAnswer) {
       });
       
       const result = await response.json();
-      console.log("Server Response:", result);//what is the server sending?
+      console.log("Server Response- Action Creators:", result);//what is the server sending?
 
       if (response.ok) {
+        console.log("Response is ok:", result);
         dispatch(setMessage(result.message));
         dispatch(fetchQuiz());
 
@@ -101,8 +107,9 @@ export function postAnswer(selectedAnswer) {
   };
 }
 
-export function postQuiz(newQuizData) { 
+/*export function postQuiz(newQuizData) { 
   return async (dispatch) => {
+    console.log("postQuiz - newQuizData:", newQuizData);
     try {
 
       const formattedData = {
@@ -128,6 +135,32 @@ export function postQuiz(newQuizData) {
     } catch (error) {
       console.error('Error posting quiz:', error);
       dispatch(setMessage('Failed to submit quiz.'));
+    }
+  };
+}*/
+
+export const postQuiz = (formData) => { 
+  return async (dispatch) => {
+    console.log("postQuiz - newQuizData:", newQuizData);
+    try {
+      const response = await fetch('http://localhost:9000/api/quiz/new', { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newQuizData),
+      });
+    
+
+      if (response.ok) {
+        const responseData = await response.json();
+        dispatch(setMessage(responseData.message)); // Dispatch message from server
+        dispatch(resetForm()); // Reset form after successful submission
+      } else {
+        const errorData = await response.json();
+        dispatch(setMessage(errorData.message)); // Dispatch error message from server
+      }
+    } catch (error) {
+      console.error('Error posting quiz:', error);
+      dispatch(setMessage('Failed to submit quiz.')); // Dispatch error message on exception
     }
   };
 }

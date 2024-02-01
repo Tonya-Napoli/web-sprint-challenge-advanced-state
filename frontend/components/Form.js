@@ -2,81 +2,91 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import * as actionCreators from '../state/action-creators';
 
-export function Form(props) {
-  const [formData, setFormData] = useState({
-    question_text: '',
-    true_answer_text: '',
-    false_answer_text: '',
-  });
 
-  const isFormValid = Object.values(formData).every(
-    value => value.trim().length >0
-  )
-
-  useEffect (() => {
-    // load saved data from local storage on mount
-    const savedData = localStorage.getItem('formData');
-    if (savedData) {
-      setFormData(JSON.parse(savedData));
-    }
-  }, []);
-  // Save data to local storage on change
-  useEffect(() => {
-    localStorage.setItem('formData', JSON.stringify(formData));
-  }, [formData]);
+  export function Form(props) {
+    useEffect(() => {
+      const savedData = localStorage.getItem('formData');
+      if (savedData) {
+        const formData = JSON.parse(savedData);
+        Object.entries(formData).forEach(([field, value]) => {
+          props.inputChange(field, value);
+        });
+      }
+    }, [props.inputChange]); 
 
 
   const handleChange = ( event ) => {
-    setFormData({
-     ...formData,
-      [event.target.id]: event.target.value
-    });
+    const { id, value } = event.target;
+    props.inputChange(id, value);
   };
 
-  const onSubmit = evt => {
+  const isFormValid = props.formData.newQuestion.trim().length > 0 &&
+                    props.formData.newTrueAnswer.trim().length > 0 &&
+                    props.formData.newFalseAnswer.trim().length > 0;
+
+   
+  const onSubmit = (evt) => {
     evt.preventDefault();
-    props.postQuiz(formData);
-    setFormData({
-      question_text: '',
-      true_answer_text: '',
-      false_answer_text: '',
-    });
-  }
+
+    
+    props.postQuiz(props.formData);
+    props.resetForm();
+  };
+
+  console.log("Form:props.formData is logged", props.formData);
+
+  //const isFormValid = Object.values(props.formData).every(value => value.trim().length > 0);
+
+  console.log("IsFormValid Results:", isFormValid);
+
+  Object.entries(props.formData).forEach(([key, value]) => {
+    console.log(`${key}: '${value}' (trimmed length: ${value.trim().length})`);
+  });
+  
 
   return (
-    <form id="form" onSubmit={onSubmit}>
+    <form onSubmit={onSubmit}>
       <h2>Create New Quiz</h2>
 
-      <input 
+      <input
         maxLength={50}
-        value={formData.question_text}
-        onChange={handleChange} 
-        id="question_text" 
-        placeholder="Enter question" 
+        value={props.formData.newQuestion || ''}
+        onChange={handleChange}
+        id="newQuestion"
+        placeholder="Enter question"
       />
 
-      <input 
-        maxLength={50} 
-        value={formData.true_answer_text}
-        onChange={handleChange} 
-        id="true_answer_text" 
-        placeholder="Enter true answer" 
+      <input
+        maxLength={50}
+        value={props.formData.newTrueAnswer || ''}
+        onChange={handleChange}
+        id="newTrueAnswer"
+        placeholder="Enter true answer"
       />
 
-      <input 
-        maxLength={50} 
-        value={formData.false_answer_text}
-        onChange={handleChange} 
-        id="false_answer_text" 
-        placeholder="Enter false answer" 
+      <input
+        maxLength={50}
+        value={props.formData.newFalseAnswer || ''}
+        onChange={handleChange}
+        id="newFalseAnswer"
+        placeholder="Enter false answer"
       />
 
-      <button type="submit" 
-      id="submitNewQuizBtn"
-      disabled={!isFormValid}//disabling button unless all fields have a value of more than one character
-      >Submit new quiz</button>
+      <button type="submit"
+        disabled={!isFormValid}
+      >
+        Submit new quiz
+      </button>
     </form>
   );
 }
 
-export default connect(st => st, actionCreators)(Form);
+const mapStateToProps = (state) => ({
+  formData: state.form, // Assuming the form data is stored in state.form
+});
+const mapDispatchToProps = actionCreators;
+
+export default connect(mapStateToProps, actionCreators)(Form);
+  
+
+

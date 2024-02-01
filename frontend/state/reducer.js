@@ -9,7 +9,7 @@ import { MOVE_CLOCKWISE,
   SET_MESSAGE,
   SET_LOADING,
   INPUT_CHANGE,
-  //RESET_FORM,
+  RESET_FORM,
  } from "./action-types"
                         
 const initialWheelState = 0;
@@ -83,5 +83,26 @@ const initialFormState = {
   newFalseAnswer: ''
 };
 
+function form(state = initialFormState, action) {
+  switch (action.type) {
+    case INPUT_CHANGE:
+      const { field, value } = action.payload;
+      return {
+        ...state,
+        [field]:value
+      };
+    case RESET_FORM:
+      return initialFormState;
+    default:
+      return state;
+  }
+}
 
-export default combineReducers({ wheel, quiz, selectedAnswer, infoMessage, loading })
+
+export default combineReducers({ 
+  wheel, 
+  quiz, 
+  selectedAnswer, 
+  infoMessage, 
+  loading,
+  form })
