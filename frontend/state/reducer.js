@@ -78,19 +78,25 @@ function infoMessage(state = initialMessageState, action) {
 }
 
 const initialFormState = {
-  newQuestion: '',
-  newTrueAnswer: '',
-  newFalseAnswer: ''
+  question_text: '',
+  true_answer_text: '',
+  false_answer_text: ''
 };
+console.log("initialFormState", initialFormState);
 
 function form(state = initialFormState, action) {
+  console.log("Action recieved by form reducer", action);
+  console.log("Form state", state);
+
   switch (action.type) {
     case INPUT_CHANGE:
+      console.log(`Reducer handling INPUT_CHANGE:`, action);
       const { field, value } = action.payload;
       return {
         ...state,
         [field]:value
       };
+      
     case RESET_FORM:
       return initialFormState;
     default:

@@ -1,92 +1,119 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import * as actionCreators from '../state/action-creators';
+import {
+  setMessage, 
+  setQuiz,
+  fetchQuiz,
+  postAnswer,
+  inputChange,
+  postQuiz 
+} from '../state/action-creators';
 
 
-  export function Form(props) {
-    useEffect(() => {
-      const savedData = localStorage.getItem('formData');
-      if (savedData) {
-        const formData = JSON.parse(savedData);
-        Object.entries(formData).forEach(([field, value]) => {
-          props.inputChange(field, value);
-        });
-      }
-    }, [props.inputChange]); 
+export function Form(props) {
+  useEffect(() => {
+    console.log("Form useEffect called", props);
+    const savedData = localStorage.getItem('formData');
+    if (savedData) {
+      const formData = JSON.parse(savedData);
+      Object.entries(formData).forEach(([field, value]) => {
+        props.inputChange(field, value);
+      });
+    }
+  }, [props.inputChange]); 
 
-
-  const handleChange = ( event ) => {
+  const handleChange = (event) => {
     const { id, value } = event.target;
-    props.inputChange(id, value);
+    console.log(`handleChange called: id=${id}, value=${value}`);
+   // props.inputChange(id, value);
+
+   const fieldMap = { 
+    newQuestion: 'question_text',
+    newTrueAnswer: 'true_answer_text',
+    newFalseAnswer: 'false_answer_text',
+   }
+
+   const fieldName = fieldMap[id] || id;
+
+   props.inputChange(fieldName, value);
   };
 
-  const isFormValid = props.formData.newQuestion.trim().length > 0 &&
-                    props.formData.newTrueAnswer.trim().length > 0 &&
-                    props.formData.newFalseAnswer.trim().length > 0;
+  const isFormValid = props.form.question_text.trim().length >= 1 &&
+                      props.form.true_answer_text.trim().length >= 1 &&
+                      props.form.false_answer_text.trim().length >= 1 ;
 
-   
-  const onSubmit = (evt) => {
-    evt.preventDefault();
+  const handleSubmit = async (evt) => {
+    evt.preventDefault()
+    console.log("what is the props question_text", props.form);
+    if (isFormValid) {
+      await props.postQuiz({
+        question_text: props.form.question_text,
+        true_answer_text: props.form.true_answer_text ,
+        false_answer_text: props.form.false_answer_text
+      });
 
-    
-    props.postQuiz(props.formData);
-    props.resetForm();
+      console.log("what is the props question_text", props.form.question_text);
+      console.log("what is the props trueAnswer", props.form.true_answer_text);
+      console.log("what is the props falseAnswer", props.form.false_answer_text);
+
+    } else {
+      console.log('Form is invalid.');
+    }
   };
-
-  console.log("Form:props.formData is logged", props.formData);
-
-  //const isFormValid = Object.values(props.formData).every(value => value.trim().length > 0);
-
-  console.log("IsFormValid Results:", isFormValid);
-
-  Object.entries(props.formData).forEach(([key, value]) => {
-    console.log(`${key}: '${value}' (trimmed length: ${value.trim().length})`);
-  });
-  
 
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={handleSubmit}>
       <h2>Create New Quiz</h2>
-
       <input
-        maxLength={50}
-        value={props.formData.newQuestion || ''}
-        onChange={handleChange}
-        id="newQuestion"
-        placeholder="Enter question"
-      />
+  id="newQuestion"
+  maxLength={50}
+  value={props.form.question_text || ''}
+  onChange={handleChange}
+  placeholder="Enter question"
+/>
+<input
+  id="newTrueAnswer"
+  maxLength={50}
+  value={props.form.true_answer_text || ''}
+  onChange={handleChange}
+  placeholder="Enter true answer"
+/>
+<input
+  id="newFalseAnswer"
+  maxLength={50}
+  value={props.form.false_answer_text || ''}
+  onChange={handleChange}
+  placeholder="Enter false answer"
+/>
 
-      <input
-        maxLength={50}
-        value={props.formData.newTrueAnswer || ''}
-        onChange={handleChange}
-        id="newTrueAnswer"
-        placeholder="Enter true answer"
-      />
+<button type="submit" disabled={!isFormValid} id="submitNewQuizBtn">
+  Submit new quiz
+</button>
 
-      <input
-        maxLength={50}
-        value={props.formData.newFalseAnswer || ''}
-        onChange={handleChange}
-        id="newFalseAnswer"
-        placeholder="Enter false answer"
-      />
 
-      <button type="submit"
-        disabled={!isFormValid}
-      >
-        Submit new quiz
-      </button>
+
     </form>
   );
 }
 
 const mapStateToProps = (state) => ({
-  formData: state.form, // Assuming the form data is stored in state.form
+  form: state.form, 
+  infoMessage: state.infoMessage,
 });
-const mapDispatchToProps = actionCreators;
 
-export default connect(mapStateToProps, actionCreators)(Form);
+const mapDispatchToProps = {
+  inputChange, 
+  postQuiz, 
+  setMessage,
+  setQuiz,
+  fetchQuiz,
+  postAnswer,
+  inputChange
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Form);
+
   
 
 

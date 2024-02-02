@@ -32,20 +32,21 @@ export function setQuiz(quiz_id) {
  }
 
 export const inputChange = (field, value) => { 
+  console.log(`inputChange action dispatched: field=${field}, value=${value}`);
   return { 
-    type: 'INPUT_CHANGE', 
+    type: INPUT_CHANGE, 
     payload: {field, value },
 };
 };
 
 export const resetForm = () => {
   return { 
-    type: 'RESET_FORM' };
+    type: RESET_FORM };
  }
 
  export function fetchQuiz() {
   return async (dispatch) => {
-    dispatch({ type: 'SET_LOADING', payload: true }); // Start loading
+    dispatch({ type: SET_LOADING, payload: true }); // Start loading
 
     try {
       const response = await fetch('http://localhost:9000/api/quiz/next');
@@ -107,60 +108,37 @@ export function postAnswer(selectedAnswer) {
   };
 }
 
-/*export function postQuiz(newQuizData) { 
-  return async (dispatch) => {
-    console.log("postQuiz - newQuizData:", newQuizData);
-    try {
 
-      const formattedData = {
-        question_text: newQuizData.question_text,
-        true_answer_text: newQuizData.true_answer_text,
-        false_answer_text: newQuizData.false_answer_text,
-      }
-      const response = await fetch('http://localhost:9000/api/quiz/new', { 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newQuizData), //newQuizData
-      });
+      export const postQuiz = (formData) => { 
+        return async (dispatch) => {
+          const payload = {
+            question_text: formData.question_text, //newQuestion,
+            true_answer_text: formData.true_answer_text, //newTrueAnswer,
+            false_answer_text: formData.false_answer_text //newFalseAnswer,
+          };
 
-      if (response.ok) {
-        const message = await response.json();
-        dispatch(setMessage(message.message));
-        dispatch(resetForm());
-
-      } else {
-        const errorData = await response.json();
-        dispatch(setMessage(errorData.message));
-      }
-    } catch (error) {
-      console.error('Error posting quiz:', error);
-      dispatch(setMessage('Failed to submit quiz.'));
-    }
-  };
-}*/
-
-export const postQuiz = (formData) => { 
-  return async (dispatch) => {
-    console.log("postQuiz - newQuizData:", newQuizData);
-    try {
-      const response = await fetch('http://localhost:9000/api/quiz/new', { 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newQuizData),
-      });
+          console.log("payload just before making the fetch:", JSON.stringify(payload));
+ 
+          try {
+            const response = await fetch('http://localhost:9000/api/quiz/new', { 
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+            });
+            console.log("postQuiz - JSONresponse:", response);
     
-
       if (response.ok) {
         const responseData = await response.json();
         dispatch(setMessage(responseData.message)); // Dispatch message from server
         dispatch(resetForm()); // Reset form after successful submission
       } else {
         const errorData = await response.json();
+        console.error('Server validation error:', errorData);
         dispatch(setMessage(errorData.message)); // Dispatch error message from server
       }
     } catch (error) {
       console.error('Error posting quiz:', error);
-      dispatch(setMessage('Failed to submit quiz.')); // Dispatch error message on exception
+      dispatch(setMessage(errorData.message || 'Failed to submit quiz.')); // Dispatch error message on exception
     }
   };
 }
